@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8">
+      <title>Product Factory</title>
+      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>
+      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-route.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <!-- Latest compiled and minified CSS -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+      <!-- Optional theme -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+      <!-- Latest compiled and minified JavaScript -->
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script>
+      var myApp = angular.module('myApp', ['ngRoute']);
+      myApp.config(function ($routeProvider) {
+        $routeProvider
+          .when('/',{
+              templateUrl: 'partials/products.html'
+          })
+          .when('/products',{
+              templateUrl: 'partials/products.html'
+          })
+          .otherwise({
+            redirectTo: '/'
+          });
+      });
+      myApp.factory('productFactory',function(){
+       var products = [
+        {Name: 'Keyboard', Price:149.99},
+        {Name: 'Mouse',Price: 59.99},
+        {Name: 'BasketBall',Price: 59.99}
+       ];
+        var factory ={};
+
+        factory.getproducts = function(callback){
+          callback(products);
+        }
+
+        factory.addproduct= function(data){
+          products.push(data);
+        }
+
+        factory.destroy = function(data){
+          console.log(data);
+          products.splice(data,1);
+        }
+
+        factory.update = function(data){
+          if(products[data].Inventory>0){
+          products[data].Inventory -=1;
+          }
+        }
+        return factory;
+      })
+      myApp.controller('singleController', function ($scope,productFactory) {
+        $scope.products=[];
+    
+        productFactory.getproducts(function(data){
+          $scope.products=data;
+          console.log('scope products',$scope.products)
+        })
+        $scope.addProduct=function(){
+          var Newproduct = {Name:$scope.newProduct.name, Price: $scope.newProduct.price};
+
+          productFactory.addproduct(Newproduct);
+          $scope.newproduct={};
+        }
+
+        $scope.destroyProduct=function(product){
+          console.log(product)
+
+          var delProduct = $scope.products.indexOf(product);
+          productFactory.destroy(delProduct);
+        }
+      })
+      myApp.controller('ordersController',function ($scope,productFactory) {
+         productFactory.getproducts(function(data){
+         $scope.productsinv=data;
+        
+        })
+         $scope.buyProduct=function(product){
+          var updateProduct = $scope.productsinv.indexOf(product);
+          productFactory.update(updateProduct);
+         }
+
+      })
+    </script>
+  </head>
+  <body>
+    
+    <div ng-app='myApp'>
+          <div ng-view="">
+          </div>
+      </div>
+  </body>
+</html>

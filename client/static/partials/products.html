@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Product Factory</title>
+	<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+	<style type="text/css" media="screen">
+		.ng.scope{
+			margin-top: 100px;
+		}
+	</style>
+
+	</head>
+<body>
+	<div class="container">
+		<div class="products" ng-controller="singleController">
+			<div class="row">
+				<div class="col-sm-6">
+					<form class="form" id="productForm">
+						<div class="form-group">
+							<label>Product Name</label>
+							<input class="form-control" type="text" ng-model="newProduct.name" name="name" id="name">
+					
+							<label>Product Price</label>
+							<input class="form-control" type="number" ng-model="newProduct.price" name="price" id="price">
+						</div>
+				</div>
+					<div class="col-sm-6">
+					<input type="submit" style="margin-right:420px; margin-top:80px;" class="btn btn-lg btn-primary pull-right"  value="Add Product" ng-click="addProduct()">
+					</form>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12" style="width: 80%">
+						<h3>Find Products</h3>
+					<table class="table table-highlight">
+						<thead>
+							<th>Name</th>
+							<th>Price</th>
+						
+							<th>Actions</th>
+						</thead>
+						<tbody style="border: 1px solid;">
+							<tr ng-repeat="product in products | filter:product_filter track by $index">
+								<td ng-bind="product.Name"></td>
+								<td ng-bind="product.Price"></td>
+								<td><button class="btn btn-danger" style="width: 150px;" ng-click="destroyProduct(product)">Delete Product</button></td>
+								<td ng-bind="product.Location"></td>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
